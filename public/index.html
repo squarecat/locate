@@ -8,12 +8,22 @@
   <link href='./css/index.css' rel='stylesheet' />
   <link href='./css/map.css' rel='stylesheet' />
   <link href='./css/font.css' rel='stylesheet' />
+
+  <link rel="icon" href="https://cdn-images-1.medium.com/fit/c/256/256/1*1knek2CBsvpqRtGQm6pSpg.png" class="js-favicon">
+  <link rel="apple-touch-icon" sizes="152x152" href="https://cdn-images-1.medium.com/fit/c/304/304/1*1knek2CBsvpqRtGQm6pSpg.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="https://cdn-images-1.medium.com/fit/c/240/240/1*1knek2CBsvpqRtGQm6pSpg.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="https://cdn-images-1.medium.com/fit/c/240/240/1*1knek2CBsvpqRtGQm6pSpg.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="https://cdn-images-1.medium.com/fit/c/120/120/1*1knek2CBsvpqRtGQm6pSpg.png">
+  <link rel="mask-icon" href="https://cdn-static-1.medium.com/_/fp/icons/favicon.KjTfUJo7yJH_fCoUzzH3cg.svg" color="#171717">
+  <meta content="index, follow">
 </head>
 <body>
   <header class="header">
-    <img src="https://cdn-images-1.medium.com/max/100/1*1knek2CBsvpqRtGQm6pSpg@2x.png" />
-    <span id="local-time"></span>
-    <span id="last-seen"></span>
+    <div class="header-container">
+      <img class="header-col" src="https://cdn-images-1.medium.com/max/100/1*1knek2CBsvpqRtGQm6pSpg@2x.png" />
+      <div class="header-col" id="current-place"></div>
+      <div class="header-col" id="local-time"></div>
+    </div>
   </header>
   <main>
     <div id="map">

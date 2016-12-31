@@ -6,6 +6,8 @@ var map = new mapboxgl.Map({
     center: [4.899, 52.372]
 });
 
+var offsetInMinutes;
+
 fetch("/moves/me")
   .then(body => {
     return body.json();
@@ -24,12 +26,19 @@ fetch("/moves/today")
     console.error(err);
   });
 
+
+function setTime() {
+  const localTime = moment().utcOffset(offsetInMinutes);
+  document.getElementById("local-time").innerText = localTime.format("HH:mma");
+}
+
 function renderProfile(profile) {
   const { currentTimeZone } = profile;
-  const offsetInMinutes = currentTimeZone.offset / 60;
-  const localTime = moment().utcOffset(offsetInMinutes);
-
-  document.getElementById("local-time").innerText = localTime.format("HH:mma");
+  offsetInMinutes = currentTimeZone.offset / 60;
+  setTime();
+  setInterval(function () {
+    setTime();
+  }, 1000)
 }
 
 function renderLatestMoves(moves) {
@@ -43,4 +52,9 @@ function renderLatestMoves(moves) {
   var marker = new mapboxgl.Marker(document.getElementById("marker"))
     .setLngLat(latlng)
     .addTo(map);
+  fetch("https://api.mapbox.com/geocoding/v5/mapbox.places/"+latlng+".json?access_token=pk.eyJ1Ijoiaml2aW5ncyIsImEiOiJ6dzhhM1FJIn0.irjChrcnF1fcbBbDLvjVUQ")
+    .then(body => body.json())
+    .then(res => {
+      document.getElementById("current-place").innerText = res.features[0].place_name;
+    })
 }
