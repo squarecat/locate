@@ -6,7 +6,7 @@ import http from 'http';
 const app = express();
 
 app.set('port', 80);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'))
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,9 +19,7 @@ app.post('/moves/notification', (req, res) => {
   return res.send(200);
 });
 
-app.get('/', (req, res) => {
-  return res.send('ok');
-});
+require("./moves")(app);
 
 http.createServer(app).listen(app.get('port'), () => {
   console.info(`Express server listening on port ${app.get('port')}`);
