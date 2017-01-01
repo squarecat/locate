@@ -1055,6 +1055,12 @@ ini@~1.3.0:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.4.tgz#0537cb79daf59b59a1a517dff706c86ec039162e"
 
+instagram-api:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/instagram-api/-/instagram-api-1.0.3.tgz#48abaeda9166f74a007608c74202867bc222a5fa"
+  dependencies:
+    q "^1.4.1"
+
 invariant@^2.2.0:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
@@ -1433,6 +1439,12 @@ passport:
     passport-strategy "1.x.x"
     pause "0.0.1"
 
+passport-instagram:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-instagram/-/passport-instagram-1.0.0.tgz#eaa2b42d11473bcfda5190f26234cf485f645656"
+  dependencies:
+    passport-oauth2 "1.x.x"
+
 passport-moves:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/passport-moves/-/passport-moves-0.0.1.tgz#9a2939552d4f41f960cf9262fed52512ad60405b"
@@ -1501,6 +1513,10 @@ proxy-addr@~1.1.2:
 punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
+
+q@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
 
 qs@~6.3.0:
   version "6.3.0"

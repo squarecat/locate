@@ -7,6 +7,8 @@ var map = new mapboxgl.Map({
 });
 
 var offsetInMinutes;
+var defaultPosition;
+var allPhotos;
 
 fetch("/moves/me")
   .then(body => {
@@ -26,10 +28,57 @@ fetch("/moves/today")
     console.error(err);
   });
 
+fetch("/photos")
+  .then(body => {
+    return body.json();
+  })
+  .then(images => {
+    console.log(images);
+    var photos = allPhotos = images.data;
+
+    document.querySelectorAll('.js-photo').forEach(function (p, i) {
+      p.setAttribute('data-photo-id', photos[i].id);
+      p.innerHTML = '<img src="' + photos[i].images.standard_resolution.url + '"/>';
+    });
+  })
+  .catch(err => {
+    console.error(err);
+  });
 
 function setTime() {
   const localTime = moment().utcOffset(offsetInMinutes);
   document.getElementById("local-time").innerText = localTime.format("HH:mma");
+}
+
+function onPhotoFocus(e) {
+  e.preventDefault();
+  var el = e.currentTarget.querySelector('.js-photo');
+  var focussedAlready = el.classList.contains('photo--focussed');
+  onPhotoUnfocus();
+  if (focussedAlready) return map.panTo(defaultPosition);
+  el.classList.add('photo--focussed');
+  document.querySelectorAll('.js-photos-list').forEach(function (el) {
+    el.classList.add('photos--focussed');
+  });
+  var photoId = el.getAttribute('data-photo-id');
+  var photoDetails = allPhotos.find(function(p) {
+    return p.id === photoId;
+  })
+  if (photoDetails.location) {
+    map.panTo([ photoDetails.location.longitude, photoDetails.location.latitude ]);
+  }
+
+  return false;
+}
+
+function onPhotoUnfocus() {
+  document.querySelectorAll('.photos--focussed').forEach(function (el) {
+    el.classList.remove('photos--focussed');
+  });
+  document.querySelectorAll('.photo--focussed').forEach(function (el) {
+    el.classList.remove('photo--focussed');
+  });
+
 }
 
 function renderProfile(profile) {
@@ -48,6 +97,7 @@ function renderLatestMoves(moves) {
   // document.getElementById("last-seen").innerText = lastSeenAt.format("Do MMM HH:mma");
   const location = lastSeenPlace.place.location;
   var latlng = [location.lon, location.lat];
+  defaultPosition = latlng;
   map.panTo(latlng);
   var marker = new mapboxgl.Marker(document.getElementById("marker"))
     .setLngLat(latlng)
@@ -58,3 +108,7 @@ function renderLatestMoves(moves) {
       document.getElementById("current-place").innerText = res.features[0].place_name;
     })
 }
+
+document.querySelectorAll('.js-photo-link').forEach(function (el) {
+  el.addEventListener('click', onPhotoFocus);
+});

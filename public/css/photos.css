@@ -1,0 +1,62 @@
+.photos {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 126px;
+  transition: height 250ms ease-in-out;
+}
+
+.photos__list {
+  padding: 8px 0;
+  margin: 0;
+  display: flex;
+  overflow-x: auto;
+  list-style: none;
+  padding-right: 10px;
+  align-items: flex-end;
+  /*transition: height 250ms ease-in-out;*/
+}
+
+.photo {
+  height: 100px;
+  background: rgba(0,0,0,0.1);
+  width: 100px;
+  list-style: none;
+  float: left;
+  opacity: 0.75;
+  padding: 10px;
+  padding-right: 0;
+  background: white;
+  transition:
+    height 250ms ease-in-out,
+    width 250ms ease-in-out;
+}
+
+.photo:hover {
+  opacity: 1;
+}
+
+.photo img {
+  height: 100%;
+  width: 100%;
+}
+
+.photo:empty {
+  display: none;
+}
+
+.photos--focussed {
+  height: 326px;
+  transition: height 250ms ease-in-out;
+}
+
+.photos--focussed .photos__list {
+  /*height: 303px;*/
+}
+
+.photo--focussed {
+  height: 300px;
+  width: 300px;
+  opacity: 1;
+}
