@@ -11,6 +11,7 @@ var defaultPosition;
 var allPhotos;
 
 map.on('load', () => {
+  document.body.setAttribute("data-loaded", true);
   fetch("/moves/me")
   .then(body => {
     return body.json();
@@ -201,7 +202,10 @@ function renderTodayMoves(moves) {
   var latlng = [location.lon, location.lat];
   defaultPosition = latlng;
   map.panTo(latlng);
-  var marker = new mapboxgl.Marker(document.querySelector(".marker"))
+  var el = document.createElement('div');
+  el.className = 'marker marker--primary';
+
+  var marker = new mapboxgl.Marker(el)
     .setLngLat(latlng)
     .addTo(map);
   fetch("https://api.mapbox.com/geocoding/v5/mapbox.places/"+latlng+".json?access_token=pk.eyJ1Ijoiaml2aW5ncyIsImEiOiJ6dzhhM1FJIn0.irjChrcnF1fcbBbDLvjVUQ")

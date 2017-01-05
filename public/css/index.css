@@ -1,3 +1,11 @@
+main {
+  opacity: 0;
+}
+
+body[data-loaded="true"] main {
+  opacity: 1;
+}
+
 .header {
   z-index: 9;
   position: fixed;
@@ -35,4 +43,17 @@
 
 .header-col {
   /*flex: 1;*/
+}
+
+.disclaimer {
+  position: absolute;
+  bottom: 118px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  background: rgba(0,0,0,0.3);
+  color: white;
+  font-size: 12px;
+  padding: 2px;
+  margin: 0;
 }

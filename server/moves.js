@@ -2,7 +2,9 @@ var passport = require("passport");
 var MovesStrategy = require("passport-moves").Strategy;
 var request = require('request');
 var moment = require('moment');
+var apicache = require('apicache');
 
+let cache = apicache.middleware
 var me = {
     accessToken: "3RChvPsj68hTiQxyebOJc35O19d50mc8Psho2pkM3qWyafcuqxhp6X75cgFN4Tgy",
     refreshToken: "JtpHPa90MY5SKO0dewp75n2s9UwyBnAm8apQqmw9eH9sZ_157Nb3yIdTwr9FyGa7"
@@ -34,24 +36,37 @@ module.exports = function (app) {
     res.send("Done!");
   });
 
-  app.get("/moves/me", (req, res) => {
+  app.get("/moves/me", cache('24 hours'), (req, res) => {
     if (local) return res.send(require("../test/profile.json"));
     console.log("getting moves")
     request(`https://api.moves-app.com/api/1.1/user/profile?access_token=${me.accessToken}`, function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        console.log(body);
+        // console.log(body);
         return res.send(body)
       }
       return res.send(error);
     });
   });
 
-  app.get("/moves/today", (req, res) => {
+  app.get("/moves/latest", cache('2 hours'), (req, res) => {
+    if (local) return res.send(require("../test/today.json"));
+    var now = moment().format("YYYYMMDD");
+    request(`https://api.moves-app.com/api/1.1/user/storyline/daily?pastDays=5&trackPoints=true&access_token=${me.accessToken}`,
+      function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+        // console.log(body);
+        return res.send(body);
+      }
+      return res.send(error);
+    });
+  });
+
+  app.get("/moves/today", cache('2 hours'), (req, res) => {
     if (local) return res.send(require("../test/today.json"));
     var now = moment().format("YYYYMMDD");
     request(`https://api.moves-app.com/api/1.1/user/places/daily/${now}?access_token=${me.accessToken}`, function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        console.log(body);
+        // console.log(body);
         return res.send(body)
       }
       return res.send(error);

@@ -27,9 +27,8 @@
     </div>
   </header>
   <main>
-    <div id="map">
-
-    </div>
+    <div id="map"></div>
+    <span class="disclaimer">Showing last 5 days of activity</span>
     <div class="photos js-photos-list">
       <ul class="photos__list">
         <li><a href class="js-photo-link"><div class="photo js-photo"></div></a></li>
@@ -75,17 +74,12 @@
         <li><a href class="js-photo-link"><div class="photo js-photo"></div></a></li>
       </ul>
     </div>
+    <div class="marker marker--muted"></div>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
   <script src="./js/index.js"></script>
-  <script defer>
-    setTimeout(function () {
-      document.body.setAttribute("data-loaded", true);
-    }, 500)
-  </script>
-  <div class="marker marker--primary"></div>
-  <div class="marker marker--muted"></div>
+
 
 </body>
 </html>
