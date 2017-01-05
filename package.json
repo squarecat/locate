@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/squarecat/locate#readme",
   "dependencies": {
+    "apicache": "^0.7.4",
     "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",

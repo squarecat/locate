@@ -10,7 +10,8 @@ var offsetInMinutes;
 var defaultPosition;
 var allPhotos;
 
-fetch("/moves/me")
+map.on('load', () => {
+  fetch("/moves/me")
   .then(body => {
     return body.json();
   })
@@ -19,11 +20,20 @@ fetch("/moves/me")
     console.error(err);
   });
 
-fetch("/moves/today")
+fetch("/moves/latest")
   .then(body => {
     return body.json();
   })
   .then(moves => renderLatestMoves(moves))
+  .catch(err => {
+    console.error(err);
+  });
+
+fetch("/moves/today")
+  .then(body => {
+    return body.json();
+  })
+  .then(moves => renderTodayMoves(moves))
   .catch(err => {
     console.error(err);
   });
@@ -37,13 +47,46 @@ fetch("/photos")
     var photos = allPhotos = images.data;
 
     document.querySelectorAll('.js-photo').forEach(function (p, i) {
+      if (!photos[i]) return;
       p.setAttribute('data-photo-id', photos[i].id);
       p.innerHTML = '<img src="' + photos[i].images.standard_resolution.url + '"/>';
+    });
+
+    photos.forEach(photo => {
+      if (!photo.location) return;
+      const marker = {
+        "type": "Feature",
+        "properties": {
+          "message": "Baz",
+          "iconSize": [20, 20]
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            photo.location.longitude,
+            photo.location.latitude
+          ]
+        }
+      };
+      // var el = document.createElement('div');
+      // el.className = 'image-marker';
+      // el.style.backgroundImage = 'url('+photo.images.thumbnail.url+')';
+      // el.style.width = marker.properties.iconSize[0] + 'px';
+      // el.style.height = marker.properties.iconSize[1] + 'px';
+
+      // new mapboxgl.Marker(el)
+      //   .setLngLat(marker.geometry.coordinates)
+      //   .addTo(map);
+      // el.addEventListener('click', function() {
+      //   window.alert(marker.properties.message);
+      // });
     });
   })
   .catch(err => {
     console.error(err);
   });
+})
+
 
 function setTime() {
   const localTime = moment().utcOffset(offsetInMinutes);
@@ -65,7 +108,11 @@ function onPhotoFocus(e) {
     return p.id === photoId;
   })
   if (photoDetails.location) {
-    map.panTo([ photoDetails.location.longitude, photoDetails.location.latitude ]);
+    var latlng = [ photoDetails.location.longitude, photoDetails.location.latitude ];
+    map.panTo(latlng);
+    var marker = new mapboxgl.Marker(document.querySelector(".marker--muted"))
+      .setLngLat(latlng)
+      .addTo(map);
   }
 
   return false;
@@ -92,6 +139,61 @@ function renderProfile(profile) {
 
 function renderLatestMoves(moves) {
   console.log(moves);
+  const geojsonRoutes = moves.reduce((route, move) => {
+    const geojson = move.segments.filter(s => {
+      return s.type === 'move';
+    }).reduce((allMoves, moveSegment) => {
+      const points = moveSegment.activities[0].trackPoints;
+      return allMoves.concat({
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+            "type": "LineString",
+            "coordinates": points.map(p => {
+              return [p.lon, p.lat];
+            })
+        }
+      });
+    }, []);
+    if (geojson.length) {
+      return route.concat(geojson);
+    }
+    return route;
+  }, []);
+
+  geojsonRoutes.forEach((route, i) => {
+    map.addSource('route'+i, {
+      "type": "geojson",
+      "data": route
+    });
+    map.addLayer({
+      "id": "route" + i,
+      "source": "route" + i,
+      "type": "line",
+      "paint": {
+          "line-width": 2,
+          "line-color": "rgba(0, 124, 191, 0.3)"
+      }
+    });
+  });
+
+  moves.forEach((move) => {
+    const geojson = move.segments.filter(s => {
+      return s.type === 'place';
+    }).forEach((placeSegment) => {
+      const points = placeSegment.place.location;
+      const latlng = [points.lon, points.lat];
+      var el = document.createElement('div');
+      el.className = 'marker';
+      var marker = new mapboxgl.Marker(el)
+        .setLngLat(latlng)
+        .addTo(map);
+    });
+  });
+}
+
+function renderTodayMoves(moves) {
+  console.log(moves);
   const lastSeenAt = moment(moves[0].lastUpdate);
   const lastSeenPlace = moves[0].segments[moves[0].segments.length - 1];
   // document.getElementById("last-seen").innerText = lastSeenAt.format("Do MMM HH:mma");
@@ -99,7 +201,7 @@ function renderLatestMoves(moves) {
   var latlng = [location.lon, location.lat];
   defaultPosition = latlng;
   map.panTo(latlng);
-  var marker = new mapboxgl.Marker(document.getElementById("marker"))
+  var marker = new mapboxgl.Marker(document.querySelector(".marker"))
     .setLngLat(latlng)
     .addTo(map);
   fetch("https://api.mapbox.com/geocoding/v5/mapbox.places/"+latlng+".json?access_token=pk.eyJ1Ijoiaml2aW5ncyIsImEiOiJ6dzhhM1FJIn0.irjChrcnF1fcbBbDLvjVUQ")
