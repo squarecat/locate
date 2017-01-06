@@ -45,7 +45,10 @@ fetch("/photos")
   })
   .then(images => {
     console.log(images);
-    var photos = allPhotos = images.data;
+    var photos = allPhotos = images.reduce((all, userImages) => {
+      return all.concat(userImages.data);
+    }, []);
+    photos = photos.sort(function (a, b) { return b.created_time - a.created_time });
 
     document.querySelectorAll('.js-photo').forEach(function (p, i) {
       if (!photos[i]) return;

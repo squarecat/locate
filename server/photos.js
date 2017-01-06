@@ -2,11 +2,13 @@ var passport = require("passport");
 var InstagramStrategy = require("passport-instagram").Strategy;
 var InstagramAPI = require('instagram-api');
 
-const INSTAGRAM_TOKEN = "314386862.d6e40d2.667529ca407948ae98106fac0f38e69d";
+const JAMES_INSTAGRAM_TOKEN = "314386862.d6e40d2.667529ca407948ae98106fac0f38e69d";
+const DANIELLE_INSTAGRAM_TOKEN = "610710.d6e40d2.048bc953a1f74cdbae12ba16ccc04d8e";
 var INSTAGRAM_CLIENT_ID = "d6e40d2608c8407ab934e4c80f282b52"
 var INSTAGRAM_CLIENT_SECRET = "9f700d3a5d1f433ea80383099b3017e3";
 
-var ig = new InstagramAPI(INSTAGRAM_TOKEN);
+var ig = new InstagramAPI(JAMES_INSTAGRAM_TOKEN);
+var igDanielle = new InstagramAPI(DANIELLE_INSTAGRAM_TOKEN);
 
 passport.serializeUser(function(user, done) {
   console.log(user);
@@ -61,15 +63,29 @@ module.exports = function (app) {
     });
 
   app.get('/photos', (req, res) => {
-    ig.userSelfMedia()
-      .then(function(err, result, remaining, limit) {
-        if (err) {
-          console.error(err);
-          return res.send(err);
-        }
-        console.log("res", result);
-        res.send(result);
-      });
+    return Promise.all([
+      igDanielle.userSelfMedia().then(function(result) {
+        console.log('got danielle photos');
+        return result;
+      }),
+      ig.userSelfMedia().then(function(result) {
+        console.log('got james photos');
+        return result;
+      })
+    ])
+    .then(function(photos) {
+      console.log(photos);
+      return photos.reduce(function(all, list) {
+        return all.concat(list);
+      }, [])
+    })
+    .then(function(photos) {
+      res.send(photos);
+    })
+    .catch(function(err) {
+      console.error(err);
+      return res.send(err);
+    });
   });
 }
 
