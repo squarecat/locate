@@ -685,6 +685,7 @@ fetch("/photos").then(function (body) {
     p.setAttribute('data-photo-id', photos[i].id);
     p.innerHTML = '<img src="' + photos[i].images.standard_resolution.url + '"/>';
   });
+  document.querySelector('.photos__list').scrollLeft = window.outerWidth / 2;
 
   photos.forEach(function (photo) {
     if (!photo.location) return;

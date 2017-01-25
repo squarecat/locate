@@ -15,6 +15,7 @@
   list-style: none;
   padding-right: 10px;
   align-items: flex-end;
+  padding-left: 50%;
   /*transition: height 250ms ease-in-out;*/
 }
 
@@ -83,7 +84,7 @@
   left: 50%;
   transform: translate(-50%, -320px);
   height: 0;
-  transition: height 700ms ease-in-out;
+  transition: height 500ms linear;
 }
 
 .photo--highlighted::before {
