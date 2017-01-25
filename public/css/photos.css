@@ -60,3 +60,36 @@
   width: 300px;
   opacity: 1;
 }
+
+.photo--focussed::after {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgb(125, 199, 186);
+  border-radius: 50%;
+  bottom: 70vh;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  transition: transform 400ms ease-in-out;
+}
+
+.photo--focussed::before {
+  content: "";
+  background: rgb(125, 199, 186);
+  width: 3px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -320px);
+  height: 0;
+  transition: height 700ms ease-in-out;
+}
+
+.photo--highlighted::before {
+  height: calc(70vh - 320px);
+}
+
+.photo--highlighted::after {
+  transform: translateX(-50%) scale(1);
+}
