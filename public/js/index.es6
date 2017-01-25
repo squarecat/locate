@@ -27,7 +27,7 @@ function onPhotoFocus(e) {
     });
   map.dragPan.disable();
   setTimeout(() => {
-    document.querySelector('.photos__list').scrollLeft = el.offsetLeft - (window.outerWidth/2) + 160;
+    document.querySelector('.photos__list').scrollLeft = el.offsetLeft - (window.innerWidth/2) + 160;
     el.classList.add('photo--focussed');
     document.querySelectorAll('.js-photos-list').forEach(function (el) {
       el.classList.add('photos--focussed');
@@ -38,8 +38,8 @@ function onPhotoFocus(e) {
     })
     if (photoDetails.location) {
       const latlng = [ photoDetails.location.longitude, photoDetails.location.latitude ];
-      const intendedMapCenter = window.outerHeight * 0.7;
-      const currentMapCenter = window.outerHeight / 2;
+      const intendedMapCenter = window.innerHeight * 0.7;
+      const currentMapCenter = window.innerHeight / 2;
 
       const offset = intendedMapCenter - currentMapCenter + 22;
       map.flyTo({
@@ -231,7 +231,7 @@ fetch("/photos")
       p.setAttribute('data-photo-id', photos[i].id);
       p.innerHTML = '<img src="' + photos[i].images.standard_resolution.url + '"/>';
     });
-    document.querySelector('.photos__list').scrollLeft = window.outerWidth / 2;
+    document.querySelector('.photos__list').scrollLeft = window.innerWidth / 2;
 
     photos.forEach(photo => {
       if (!photo.location) return;
